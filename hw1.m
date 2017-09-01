@@ -88,11 +88,32 @@ figure
 plot(x1,sumX,x2,sumY)
 title('CMPE 677, Hwk 1, sum of all x and y','fontsize',12)
 print('cmpe677_hwk1_result','-dpng')
-meanX = mean(sumX)
-meanY = mean(sumY)
-varX = var(sumX)
-varY = var(sumY)
-str = strcat('mean of x ',num2str(meanX))
-text(1,meanX,str)
-str = strcat('mean of y ',num2str(meanY))
-text(1,meanY,str)
+[meanX,indexX] = max(sumX)
+[meanY,indexY] = max(sumY)
+varX = var(sumX);
+varY = var(sumY);
+str = strcat('Mean for sum of X: ',num2str(meanX));
+text(x1(indexX),meanX,str)
+str = strcat('Mean for sum of Y: ',num2str(meanY));
+text(x2(indexY),meanY,str)
+str = strcat('Variance for sum of X: ',num2str(varX));
+text(-10,2,str)
+str = strcat('Variance for sum of Y: ',num2str(varY));
+text(-10,2.5,str)
+
+% question 11
+figure
+hold off
+mu=[0 0];
+sigma=[5 -2 ;-2 2];
+x1 = -10:0.1:10;
+x2 = x1;
+[X1,X2] = meshgrid(x1,x2);
+F = mvnpdf([X1(:) X2(:)], mu,sigma);
+F = reshape(F,length(x2),length(x1));
+contour(x1,x2,F);
+xlabel('X'); ylabel('Y');
+grid on
+axis square
+title('CMPE 677, Hwk 1, Problem 11','fontsize',12);
+print('cmpe677_hwk1_11','-dpng')
