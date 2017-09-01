@@ -5,7 +5,7 @@
 % question 2
 A = [1 2 3; 2 3 4; 3 4 5; 4 5 6];
 B = A(:,2:3);
-
+  
 % question 3
 a = [1 2; 3 4];
 b = [2 2; 3 3; 4 4];
@@ -62,9 +62,9 @@ end
 b;
 
 % question 9
-[eye(2) zeros(2,1)]*0;
-eye(2,3)*0;
-[0 0 0; 0 0 0];
+%[eye(2) zeros(2,1)]*0;
+%eye(2,3)*0;
+%[0 0 0; 0 0 0];
 
 % question 10
 figure
@@ -81,17 +81,15 @@ grid on
 axis square
 title('CMPE 677, Hwk 1, Problem 10','fontsize',12);
 print('cmpe677_hwk1_10','-dpng')
-% code
+% normal distribution
 sumX = sum(F,2);
 sumY = sum(F,1);
 figure
 plot(x1,sumX,x2,sumY)
 title('CMPE 677, Hwk 1, sum of all x and y','fontsize',12)
-print('cmpe677_hwk1_result','-dpng')
-[meanX,indexX] = max(sumX)
-[meanY,indexY] = max(sumY)
-varX = var(sumX);
-varY = var(sumY);
+[meanX,indexX] = max(sumX);
+[meanY,indexY] = max(sumY);
+varX = var(sumX); varY = var(sumY);
 str = strcat('Mean for sum of X: ',num2str(meanX));
 text(x1(indexX),meanX,str)
 str = strcat('Mean for sum of Y: ',num2str(meanY));
@@ -100,6 +98,8 @@ str = strcat('Variance for sum of X: ',num2str(varX));
 text(-10,2,str)
 str = strcat('Variance for sum of Y: ',num2str(varY));
 text(-10,2.5,str)
+xlabel('X'); ylabel('Y');
+print('cmpe677_hwk1_10_normal_distribution','-dpng')
 
 % question 11
 figure
@@ -116,4 +116,20 @@ xlabel('X'); ylabel('Y');
 grid on
 axis square
 title('CMPE 677, Hwk 1, Problem 11','fontsize',12);
-print('cmpe677_hwk1_11','-dpng')
+for y=-4:2:4
+    hold on
+    plot(x1,ones(size(x1)).*y,'--')
+end
+legend('contour plot','y=-4','y=-2','y=0','y=2','y=4')
+print('cmpe677_hwk1_11_contour','-dpng')
+% normal distribution
+figure
+for y=-4:2:4
+  row = size(-10:0.1:y);
+  plot(x1,F(row,:),'LineWidth',2)
+  hold on
+end
+xlabel('X'); ylabel('Y');
+title('CMPE 677, Hwk 1, Problem 11','fontsize',12)
+legend('trace y=-4','trace y=-2','trace y=0','trace y=2','trace y=4')
+print('cmpe677_hwk1_11_normal_distribution','-dpng')
