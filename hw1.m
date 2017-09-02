@@ -10,23 +10,27 @@ B = A(:,2:3);
 a = [1 2; 3 4];
 b = [2 2; 3 3; 4 4];
 c = eye(3);
-d =[1 2 3];
-%a*b
-%a-b
+d = [1 2 3];
+e = zeros(3,3);
+
+% a*b'
+% c*e
+% c.*e
+% d*b
 
 % question 4
 b = [2 2; 3 3; 4 4];
 d =[1 2 3];
 f = zeros(2,1);
 
-%b - repmat(f,1,3);
-%b + [f ; f; f];
-%b + repmat(f',1,3);
+% b = [d' d'*2]
+% b + repmat(f',3,1)
 
 % question 5
 ones(4,1)*5;
 ones(4,1).*5;
 5*ones(1,4)';
+
 
 % question 6
 A = [1 2 3 4 5; 2 3 4 5 6; 3 4 5 6 7; 4 5 6 7 8; 5 6 7 8 9];
@@ -36,12 +40,11 @@ B=[A(2:4,1) A(2:4,3) A(2:4,5)];
 
 % question 7
 x=0:.05:(3/2)*pi;
-grid on
 plot(sin(x),'r','LineWidth',3)
 hold on
 plot(sinc(x),'g','LineWidth',3)
-hold on
 plot(sin(x.^2),'LineWidth',3)
+grid on
 % labels
 xlabel('time', 'FontSize',10)
 ylabel('response', 'FontSize',10)
@@ -62,9 +65,9 @@ end
 b;
 
 % question 9
-%[eye(2) zeros(2,1)]*0;
-%eye(2,3)*0;
-%[0 0 0; 0 0 0];
+[eye(2) zeros(2,1)]*0
+eye(2,3)*0
+[0 0 0; 0 0 0]
 
 % question 10
 figure
@@ -86,6 +89,8 @@ sumX = sum(F,2);
 sumY = sum(F,1);
 figure
 plot(x1,sumX,x2,sumY)
+grid on
+% labels
 title('CMPE 677, Hwk 1, sum of all x and y','fontsize',12)
 [meanX,indexX] = max(sumX);
 [meanY,indexY] = max(sumY);
@@ -103,7 +108,6 @@ print('cmpe677_hwk1_10_normal_distribution','-dpng')
 
 % question 11
 figure
-hold off
 mu=[0 0];
 sigma=[5 -2 ;-2 2];
 x1 = -10:0.1:10;
@@ -116,19 +120,20 @@ xlabel('X'); ylabel('Y');
 grid on
 axis square
 title('CMPE 677, Hwk 1, Problem 11','fontsize',12);
+hold on
 for y=-4:2:4
-    hold on
     plot(x1,ones(size(x1)).*y,'--')
 end
 legend('contour plot','y=-4','y=-2','y=0','y=2','y=4')
 print('cmpe677_hwk1_11_contour','-dpng')
 % normal distribution
 figure
+hold on
 for y=-4:2:4
-  row = size(-10:0.1:y);
+  row = size(-10:0.1:y,2);
   plot(x1,F(row,:),'LineWidth',2)
-  hold on
 end
+grid on
 xlabel('X'); ylabel('Y');
 title('CMPE 677, Hwk 1, Problem 11','fontsize',12)
 legend('trace y=-4','trace y=-2','trace y=0','trace y=2','trace y=4')
