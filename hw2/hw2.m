@@ -9,13 +9,18 @@ X = data(:, 1);
 y = data(:, 2);
 M = [ones(length(data),1) X];
 W = ((M'*M)\M')*y;
-hy = M*W; 
-plot(X, y, 'rx', 'MarkerSize', 10,'LineWidth',3); % Plot the data
+graphX = 0:0.01:25;
+hy = W(1)+graphX.*W(2); % y=mx+b
+plot(X, y, 'rx', 'MarkerSize',10,'LineWidth',3); % Plot the data
 hold on
-plot(X,hy,'g:', 'MarkerSize', 10,'LineWidth',3);
+plot(graphX,hy,'g:', 'MarkerSize', 10,'LineWidth',3);
+axis([0 25 -5 25])
 ylabel('Profit in $10,000s'); % Set the y axis label
 xlabel('Population of City in 10,000s'); % Set the x axis label
+title('Profit vs Population');
+legend('Data point','Normal equation')
 grid on
+print('cmpe677_hwk2_7','-dpng')
 
 
 %===========================================================================
@@ -27,7 +32,7 @@ X = data(:, 1);
 y = data(:, 2);
 Xdata = [ones(length(X),1) X];
 theta = zeros(2, 1); % initialize fitting parameters to zero
-computeCost(Xdata,y,theta);
+computeCost(Xdata,y,theta)
 
 
 %===========================================================================
@@ -47,13 +52,18 @@ theta = gradientDescentLinear(M, y, theta_init, alpha, iterations);
 plot(X, y, 'rx', 'MarkerSize', 10,'LineWidth',3); % Plot the data
 hold on
 W = ((M'*M)\M')*y;
-gy = M*theta;
-ly = M*W;
-plot(X,gy, 'MarkerSize', 10,'LineWidth',3);
-plot(X,ly, 'g:', 'MarkerSize', 10,'LineWidth',3);
+graphX = 0:0.01:25;
+ly = W(1)+graphX.*W(2); % y=mx+b
+gy = theta(1)+graphX.*theta(2); % y=mx+b
+plot(graphX,gy, 'MarkerSize', 10,'LineWidth',3);
+plot(graphX,ly, 'g:', 'MarkerSize', 10,'LineWidth',3);
+axis([0 25 -5 25])
 ylabel('Profit in $10,000s'); % Set the y axis label
 xlabel('Population of City in 10,000s'); % Set the x axis label
+title('Profit vs Population');
+legend('Data point','Gradient decent','Normal equation')
 grid on
+print('cmpe677_hwk2_9','-dpng')
 
 
 %===========================================================================
@@ -73,7 +83,6 @@ gy2 = data2*theta
 
 % Load Data
 clear;
-close all;
 data = load('ex1data2.txt');
 X = data(:, 1:2);
 y = data(:, 3);
@@ -85,14 +94,19 @@ y = data(:, 3);
 [Xnorm mu sigma] = featureNormalize(X);
 % Add intercept term to X
 Xdata = [ones(length(X),1) Xnorm];
+W = ((Xdata'*Xdata)\Xdata')*y
 % Choose some alpha value
 alpha = 0.01;
 num_iters = 400;
 % Init Theta and Run Gradient Descent
 theta = zeros(3, 1);
 [theta, J_history] = gradientDescentMulti(Xdata, y, theta, alpha, num_iters);
+theta
+figure
 plot(1:400,J_history, 'MarkerSize', 10,'LineWidth',3);
-plot(X,ly, 'MarkerSize', 10,'LineWidth',3);
 ylabel('Cost'); % Set the y axis label
 xlabel('Iteration'); % Set the x axis label
+title('Learning Rate');
+legend('Learning rate curve')
 grid on
+print('cmpe677_hwk2_12','-dpng')
