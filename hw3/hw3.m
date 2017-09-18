@@ -55,7 +55,8 @@ hold on
 plot(graphX, graphY,'b--','MarkerSize',10,'LineWidth',3)
 % labels
 title(str,'fontsize',14)
-xlabel('Day of Year','fontsize',12); ylabel('Bank Acct. Balance','fontsize',12);
+xlabel('Day of Year','fontsize',12);
+ylabel('Bank Acct. Balance','fontsize',12);
 grid on
 print('cmpe677_hwk3_5_5th_order','-dpng')
 
@@ -74,7 +75,7 @@ model = [ones(length(x),1) x x.^2 x.^3 x.^4 x.^5];
 %theta = ((model'*model)\model')*y;
 theta2 = regularNormalEquation(model,y,lambda);
 avgSqErr = sum((y-model*theta2).^2)./length(y);
-str = strcat('5th order regularized fit, \lambda=', num2str(lambda), ' avgSqErr=', num2str(avgSqErr,'%.5f'));
+str = strcat('5th order regularized fit, \lambda=', num2str(lambda), ', avgSqErr=', num2str(avgSqErr,'%.5f'));
 % plot 
 figure
 graphX = (0:0.001:1)';
@@ -87,4 +88,95 @@ hold on
 plot(graphX, graphY2,'m--','MarkerSize',10,'LineWidth',3)
 % labels
 title(str,'fontsize',14)
-xlabel('Percent of Way in Semester','fontsize',12); ylabel('Bank Balance ($K)','fontsize',12);
+xlabel('Percent of Way in Semester','fontsize',12);
+ylabel('Bank Balance ($K)','fontsize',12);
+grid on
+print('cmpe677_hwk3_6_regularized','-dpng')
+
+
+
+%===========================================================================
+% question 7
+%===========================================================================
+clear
+%percent of way in semester
+x =[0 0.2072 0.3494 0.4965 0.6485 0.7833 0.9400]';
+%bank balance ($K)
+y =[2.150 1.541 0.790 0.909 0.901 0.593 0.198]';
+lambda = [0 0.001 1];
+D = [1 3 5];
+D1 = [ones(length(x),1) x];
+D3 = [ones(length(x),1) x x.^2 x.^3];
+D5 = [ones(length(x),1) x x.^2 x.^3 x.^4 x.^5];
+models = {D1, D3, D5};
+count = 0;
+index = 0;
+figure
+for lam = lambda
+  count = 0;
+  for d = D
+    index = index + 1;
+    count = count + 1;
+    str = strcat('D=', num2str(d), ', \lambda=', num2str(lam));
+    subplot(3,3,index)
+    theta = regularNormalEquation(models{count},y,lam);
+    plot(x,models{count}*theta)
+    title(str,'fontsize',8)
+  end
+end
+print('cmpe677_hwk3_7_3x3','-dpng')
+    
+
+
+%===========================================================================
+% question 8
+%===========================================================================
+clear
+figure
+rng(2000);  %random number generator seed
+mu = [0 0 ];
+sigma = [4 1.5 ; 1.5 2];
+r = mvnrnd(mu,sigma,50); %create two features, 50 samples of each
+y = r(:,1);
+x = (pi*(1:50)/20)';  %scale x for sin
+y = 10*sin(x).*(4+y); % add some curvature
+y = y + x*4;  % gradually rise over time
+hold off;
+plot(x,y,'x'); 
+
+xtrain = x(1:2:end); ytrain = y(1:2:end);
+xtest = x(2:2:end); ytest = y(2:2:end);
+figure;
+hold off
+plot(xtrain, ytrain, 'rs', 'MarkerSize', 10,'LineWidth',3,'markerfacecolor','c','markeredgecolor','b'); % Plot the data
+hold on
+plot(xtest, ytest, 'ro', 'MarkerSize', 10,'LineWidth',3,'markerfacecolor','m','markeredgecolor','r'); % Plot the data
+grid on; legend('train','test');
+
+model = [ones(length(x),1) x x.^2 x.^3];
+[theta, Stats] = lasso(model,y,'CV',2);
+lassoPlot(theta, Stats, 'PLotType','CV')
+
+
+
+%===========================================================================
+% question 9
+%===========================================================================
+clear
+% Load Data
+data = load('ex1data2.txt');
+X = data(:, 1:2);
+y = data(:, 3);
+ 
+% Scale features and set them to zero mean with std=1
+[Xnorm mu sigma] = featureNormalize(X);  % reuse this function from hwk2
+ 
+% Add intercept term to X
+Xdata = [ones(length(X),1) Xnorm];
+ 
+% Init Theta and lambda
+theta = ((Xdata'*Xdata)\Xdata')*y;  %well..this is the optimal solution
+lambda=1;
+ 
+%Run Compute Cost 
+disp(computeCostReg(Xdata,y,theta, lambda))

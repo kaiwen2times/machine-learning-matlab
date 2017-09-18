@@ -1,7 +1,8 @@
 function coef = regularNormalEquation(xData, y, lambda)
 
 inverse = xData'*xData;
-m = [zeros(length(inverse),1) ones(length(inverse),size(inverse,2)-1)];
+m = eye(length(inverse));
+m(1,1) = 0;
 coef = ((inverse+m.*lambda)\xData')*y;
 
 end
