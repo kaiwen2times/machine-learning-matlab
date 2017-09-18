@@ -1,5 +1,7 @@
-function coef = regularNormalEquation(xData, y, model, lambda)
+function coef = regularNormalEquation(xData, y, lambda)
 
-coef = ((xData'*xData+model.*lambda)\xData')*y
+inverse = xData'*xData;
+m = [zeros(length(inverse),1) ones(length(inverse),size(inverse,2)-1)];
+coef = ((inverse+m.*lambda)\xData')*y;
 
 end
