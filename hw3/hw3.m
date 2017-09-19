@@ -4,7 +4,7 @@
 clear;
 close all;
 x = [3 -2 5 1 0];
-x1 = length(x)
+x1 = length(x)-1
 x2 = 3+2+5+1+0
 x3 = 9+4+25+1
 x4 = max(x)
@@ -25,10 +25,10 @@ x4 = max(x)
 %===========================================================================
 % question 4
 %===========================================================================
-% Line going up means that a specific coefficient has influence on the cost
-% function, the more influence it exerts, the higher the line. Line going
-% down means that a specific coefficient has less influence on the cost
-% function, the less influence it exerts, the lower the line.
+% Line going up means that a specific coefficient has postive correlation
+% with the cost function, the more influence it exerts, the higher the line. Line going
+% down means that a specific coefficient has negative correlation with the cost
+% function
 
 
 %===========================================================================
@@ -72,7 +72,7 @@ y = [2.150 1.541 0.790 0.909 0.901 0.593 0.198]' ;
 % 5th order linear regression
 lambda = 0.001;
 model = [ones(length(x),1) x x.^2 x.^3 x.^4 x.^5];
-%theta = ((model'*model)\model')*y;
+theta = ((model'*model)\model')*y;
 theta2 = regularNormalEquation(model,y,lambda);
 avgSqErr = sum((y-model*theta2).^2)./length(y);
 str = strcat('5th order regularized fit, \lambda=', num2str(lambda), ', avgSqErr=', num2str(avgSqErr,'%.5f'));
@@ -80,11 +80,11 @@ str = strcat('5th order regularized fit, \lambda=', num2str(lambda), ', avgSqErr
 figure
 graphX = (0:0.001:1)';
 M1 = [ones(length(graphX),1) graphX graphX.^2 graphX.^3 graphX.^4 graphX.^5];
-%graphY1 = M1*theta;
+graphY1 = M1*theta;
 graphY2 = M1*theta2;
 scatter(x, y, 60,'MarkerEdgeColor','b','MarkerFaceColor','r')
 hold on
-%plot(graphX, graphY1,'b--','MarkerSize',10,'LineWidth',3)
+plot(graphX, graphY1,'b--','MarkerSize',10,'LineWidth',3)
 plot(graphX, graphY2,'m--','MarkerSize',10,'LineWidth',3)
 % labels
 title(str,'fontsize',14)
@@ -120,7 +120,11 @@ for lam = lambda
     str = strcat('D=', num2str(d), ', \lambda=', num2str(lam));
     subplot(3,3,index)
     theta = regularNormalEquation(models{count},y,lam);
-    plot(x,models{count}*theta)
+    theta2 = ((models{count}'*models{count})\models{count}')*y;
+    scatter(x, y, 20,'MarkerEdgeColor','b','MarkerFaceColor','r')
+    hold on
+    plot(x,models{count}*theta,'m--')
+    plot(x,models{count}*theta2,'b--')
     title(str,'fontsize',8)
   end
 end
@@ -154,8 +158,11 @@ plot(xtest, ytest, 'ro', 'MarkerSize', 10,'LineWidth',3,'markerfacecolor','m','m
 grid on; legend('train','test');
 
 model = [ones(length(x),1) x x.^2 x.^3];
-[theta, Stats] = lasso(model,y,'CV',2);
+[theta, Stats] = lasso(model,y,'CV',2)
 lassoPlot(theta, Stats, 'PLotType','CV')
+
+% you could use less regularization because looking at the graph,
+% the MSE decreases as lambda decreases.
 
 
 
@@ -180,6 +187,7 @@ lambda=1;
  
 %Run Compute Cost 
 disp(computeCostReg(Xdata,y,theta, lambda))
+
 
 
 
