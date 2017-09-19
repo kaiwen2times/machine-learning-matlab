@@ -90,6 +90,7 @@ plot(graphX, graphY2,'m--','MarkerSize',10,'LineWidth',3)
 title(str,'fontsize',14)
 xlabel('Percent of Way in Semester','fontsize',12);
 ylabel('Bank Balance ($K)','fontsize',12);
+legend('Data Point', 'Unregularized', 'Regularized')
 grid on
 print('cmpe677_hwk3_6_regularized','-dpng')
 
@@ -160,6 +161,7 @@ grid on; legend('train','test');
 model = [ones(length(x),1) x x.^2 x.^3];
 [theta, Stats] = lasso(model,y,'CV',2)
 lassoPlot(theta, Stats, 'PLotType','CV')
+print('cmpe677_hwk3_8_lasso','-dpng')
 
 % you could use less regularization because looking at the graph,
 % the MSE decreases as lambda decreases.
@@ -212,3 +214,7 @@ theta_reg = gradientDescentMultiReg(M, y, theta_init, alpha, iterations, lambda)
 fprintf('Linear Regression: [%f,%f]\n',lin_reg);
 fprintf('Gradient Descent: [%f,%f]\n',theta_unreg);
 fprintf('Regularized Gradient Descent: [%f,%f]\n',theta_reg)
+
+lambda = 100;
+theta_reg = gradientDescentMultiReg(M, y, theta_init, alpha, iterations, lambda);
+fprintf('Regularized Gradient Descent with lambda=100: [%f,%f]\n',theta_reg)
