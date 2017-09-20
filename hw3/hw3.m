@@ -177,9 +177,10 @@ title('One Standard Error vs. Min Error','fontsize',14)
 legend('train','test','One Standard Error Fit','Min Error Fit')
 print('cmpe677_hwk3_8_ose_me','-dpng')
 
-
-avgSqErrOSE = sum((y-y_one_se).^2)./length(y)
-avgSqErrME = sum((y-y_me).^2)./length(y)
+mtest = [ones(length(xtest),1) xtest xtest.^2 xtest.^3];
+mtrain = [ones(length(xtrain),1) xtrain xtrain.^2 xtrain.^3];
+avgSqErrTest = sum((ytest-mtest*me).^2)./length(ytest)
+avgSqErrTrain = sum((ytrain-mtrain*me).^2)./length(ytrain)
 
 
 
