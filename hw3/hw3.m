@@ -137,6 +137,7 @@ print('cmpe677_hwk3_7_3x3','-dpng')
 % question 8
 %===========================================================================
 clear
+close all
 figure
 rng(2000);  %random number generator seed
 mu = [0 0 ];
@@ -151,20 +152,36 @@ plot(x,y,'x');
 
 xtrain = x(1:2:end); ytrain = y(1:2:end);
 xtest = x(2:2:end); ytest = y(2:2:end);
-figure;
-hold off
+figure(1);
 plot(xtrain, ytrain, 'rs', 'MarkerSize', 10,'LineWidth',3,'markerfacecolor','c','markeredgecolor','b'); % Plot the data
 hold on
 plot(xtest, ytest, 'ro', 'MarkerSize', 10,'LineWidth',3,'markerfacecolor','m','markeredgecolor','r'); % Plot the data
-grid on; legend('train','test');
+grid on;
 
 model = [ones(length(x),1) x x.^2 x.^3];
-[theta, Stats] = lasso(model,y,'CV',2)
-lassoPlot(theta, Stats, 'PLotType','CV')
+[B, Stats] = lasso(model,y,'CV',2);
+lassoPlot(B, Stats, 'PLotType','CV')
 print('cmpe677_hwk3_8_lasso','-dpng')
 
 % you could use less regularization because looking at the graph,
 % the MSE decreases as lambda decreases.
+
+one_se = B(:,Stats.Index1SE)
+me = B(:,Stats.IndexMinMSE)
+y_one_se = model*one_se;
+y_me = model*me;
+figure(1)
+plot(x,y_one_se,'b--','MarkerSize',10,'LineWidth',3)
+plot(x,y_me,'m--','MarkerSize',10,'LineWidth',3)
+title('One Standard Error vs. Min Error','fontsize',14)
+legend('train','test','One Standard Error Fit','Min Error Fit')
+print('cmpe677_hwk3_8_ose_me','-dpng')
+
+mtest = [ones(length(xtest),1) xtest xtest.^2 xtest.^3];
+mtrain = [ones(length(xtrain),1) xtrain xtrain.^2 xtrain.^3];
+avgSqErrTest = sum((ytest-mtest*me).^2)./length(ytest)
+avgSqErrTrain = sum((ytrain-mtrain*me).^2)./length(ytrain)
+
 
 
 
@@ -188,6 +205,7 @@ theta = ((Xdata'*Xdata)\Xdata')*y;  %well..this is the optimal solution
 lambda=1;
  
 %Run Compute Cost 
+disp('cost = ')
 disp(computeCostReg(Xdata,y,theta, lambda))
 
 
