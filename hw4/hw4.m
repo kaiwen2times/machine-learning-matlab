@@ -52,10 +52,82 @@ for index = 1:4
   plotDecisionBoundary(theta, Xdata, y, degree)
   xlabel('Microchip Test 1','fontsize',10);
   ylabel('Microchip Test 2','fontsize',10);
-  hypo = ((Xdata*theta) >= threshold);
+  hypo = (sigmoid(Xdata * theta) >= threshold);
   result = (hypo == y);
   acc = sum(result)/length(y);
-  str = strcat('\lambda=',num2str(lambda(index)),', Accuracy=',num2str(acc));
+  str = strcat('\lambda=',num2str(lambda(index)),', Accuracy%=',num2str(acc));
   title(str,'fontsize',10)
 end
 print('cmpe677_hwk4_2_circle','-dpng')
+
+
+
+%==========================================================================
+% question 3
+%==========================================================================
+numberOfFolds=5;
+rng(2000); %random number generator seed
+CVindex = crossvalind('Kfold',y,numberOfFolds);
+method='LogisticRegression'
+lambda=1;
+predictionLabels = zeros(size(y));
+
+for i = 1:numberOfFolds
+  TestIndex = find(CVindex == i);
+  TrainIndex = find(CVindex ~= i);
+  TrainDataCV = Xdata(TrainIndex,:);
+  TrainDataGT =y(TrainIndex);
+  TestDataCV = Xdata(TestIndex,:);
+  TestDataGT = y(TestIndex);
+  %
+  %build the model using TrainDataCV and TrainDataGT
+  %test the built model using TestDataCV
+  %
+  switch method
+    case 'LogisticRegression'
+      % for Logistic Regression, we need to solve for theta
+      % Insert code here to solve for theta...
+      % Using TestDataCV, compute testing set prediction using the model created
+      % for Logistic Regression, the model is theta
+      % Insert code here to see how well theta works...
+      initial_theta = zeros(size(Xdata, 2), 1);
+      options = optimset('GradObj', 'on', 'MaxIter', 400);
+      [theta, J, exit_flag] = fminunc(@(t)(costFunctionLogisticRegression(t, TrainDataCV, TrainDataGT, lambda)), initial_theta, options);
+      hypo = (sigmoid(TestDataCV * theta) >= threshold);
+    case 'KNN'
+      disp('KNN not implemented yet')
+    otherwise
+      error('Unknown classification method')
+  end
+  predictionLabels(TestIndex,:) = double(hypo);
+end
+
+confusionMatrix = confusionmat(y,predictionLabels);
+accuracy = sum(diag(confusionMatrix))/sum(sum(confusionMatrix));
+fprintf(sprintf('%s: Lambda = %d, Accuracy = %6.2f%%%% \n',method, lambda,accuracy*100));
+fprintf('Confusion Matrix:\n');
+[r c] = size(confusionMatrix);
+for i=1:r
+  for j=1:r
+    fprintf('%6d ',confusionMatrix(i,j));
+  end
+  fprintf('\n');
+end
+
+
+
+%==========================================================================
+% question 4
+%==========================================================================
+clear
+close all
+% Load Training Data- Andrew Ng Machine Learning MOOC
+load('ex3data1.mat'); % training data stored in arrays X, y
+n = size(X, 1);
+num_labels = length(unique(y)); % 10 labels, from 1 to 10 (note "0" is mapped to label 10)
+% Randomly select 100 data points to display rng(2000); %random number generator seed
+rng(2000); %random number generator seed
+rand_indices = randperm(n);
+sel = X(rand_indices(1:100), :);
+displayData(sel);
+%print -djpeg95 hwk4_4.jpg
