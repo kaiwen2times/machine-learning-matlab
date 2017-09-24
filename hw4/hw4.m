@@ -92,7 +92,7 @@ for i = 1:numberOfFolds
       % Insert code here to see how well theta works...
       initial_theta = zeros(size(Xdata, 2), 1);
       options = optimset('GradObj', 'on', 'MaxIter', 400);
-      [theta, J, exit_flag] = fminunc(@(t)(costFunctionLogisticRegression(t, TrainDataCV, TrainDataGT, lambda)), initial_theta, options);
+      theta = fminunc(@(t)(costFunctionLogisticRegression(t, TrainDataCV, TrainDataGT, lambda)), initial_theta, options);
       hypo = (sigmoid(TestDataCV * theta) >= threshold);
     case 'KNN'
       disp('KNN not implemented yet')
@@ -117,10 +117,9 @@ end
 
 
 %==========================================================================
-% question 4
+% question 4, 5
 %==========================================================================
 clear
-close all
 % Load Training Data- Andrew Ng Machine Learning MOOC
 load('ex3data1.mat'); % training data stored in arrays X, y
 n = size(X, 1);
@@ -129,5 +128,50 @@ num_labels = length(unique(y)); % 10 labels, from 1 to 10 (note "0" is mapped to
 rng(2000); %random number generator seed
 rand_indices = randperm(n);
 sel = X(rand_indices(1:100), :);
-displayData(sel);
-%print -djpeg95 hwk4_4.jpg
+Xdata = [ones(n, 1) X];
+
+numberOfFolds=5;
+rng(2000); %random number generator seed
+CVindex = crossvalind('Kfold',y, numberOfFolds);
+method='KNN'
+
+lambda = 0.1;
+for i = 1:numberOfFolds
+  TestIndex = find(CVindex == i); TrainIndex = find(CVindex ~= i);
+  TrainDataCV = Xdata(TrainIndex,:); TrainDataGT =y(TrainIndex);
+  TestDataCV = Xdata(TestIndex,:); TestDataGT = y(TestIndex);
+  %
+  %build the model using TrainDataCV and TrainDataGT %test the built model using TestDataCV
+  %
+  switch method
+    case 'LogisticRegression'
+      all_theta = zeros(num_labels, size(Xdata, 2));
+      for c=1:num_labels
+        initial_theta = zeros(size(Xdata, 2), 1);
+        options = optimset('GradObj', 'on', 'MaxIter', 50);
+        [theta] = fmincg(@(t)(costFunctionLogisticRegression(t,TrainDataCV,(TrainDataGT == c),lambda)),initial_theta,options);
+        all_theta(c,:) = theta;
+      end
+      all_pred = sigmoid(TestDataCV*all_theta');
+      [maxVal,maxIndex] = max(all_pred,[],2);
+      TestDataPred=maxIndex;
+    case 'KNN'
+      [idx, dist] = knnsearch(TrainDataCV,TestDataCV,'k',3);
+      TestDataPred = mode([TrainDataGT(idx(:,1)) TrainDataGT(idx(:,2)) TrainDataGT(idx(:,3))]')';
+    otherwise
+      error('Unknown classification method')
+  end
+  predictionLabels(TestIndex,:) = double(TestDataPred);
+end
+
+confusionMatrix = confusionmat(y,predictionLabels);
+accuracy = sum(diag(confusionMatrix))/sum(sum(confusionMatrix));
+fprintf(sprintf('%s: Lambda = %d, Accuracy = %6.2f%%%% \n',method,lambda,accuracy*100));
+fprintf('Confusion Matrix:\n');
+[r c] = size(confusionMatrix);
+for i=1:r
+  for j=1:r
+    fprintf('%6d ',confusionMatrix(i,j));
+  end
+  fprintf('\n');
+end
