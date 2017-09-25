@@ -130,16 +130,19 @@ rand_indices = randperm(n);
 sel = X(rand_indices(1:100), :);
 Xdata = [ones(n, 1) X];
 
-numberOfFolds=5;
+numberOfFolds = 5;
 rng(2000); %random number generator seed
 CVindex = crossvalind('Kfold',y, numberOfFolds);
-method='KNN'
+method = 'KNN'
 
 lambda = 0.1;
 for i = 1:numberOfFolds
-  TestIndex = find(CVindex == i); TrainIndex = find(CVindex ~= i);
-  TrainDataCV = Xdata(TrainIndex,:); TrainDataGT =y(TrainIndex);
-  TestDataCV = Xdata(TestIndex,:); TestDataGT = y(TestIndex);
+  TestIndex = find(CVindex == i);
+  TrainIndex = find(CVindex ~= i);
+  TrainDataCV = Xdata(TrainIndex,:);
+  TrainDataGT =y(TrainIndex);
+  TestDataCV = Xdata(TestIndex,:);
+  TestDataGT = y(TestIndex);
   %
   %build the model using TrainDataCV and TrainDataGT %test the built model using TestDataCV
   %
@@ -156,8 +159,8 @@ for i = 1:numberOfFolds
       [maxVal,maxIndex] = max(all_pred,[],2);
       TestDataPred=maxIndex;
     case 'KNN'
-      [idx, dist] = knnsearch(TrainDataCV,TestDataCV,'k',3);
-      TestDataPred = mode([TrainDataGT(idx(:,1)) TrainDataGT(idx(:,2)) TrainDataGT(idx(:,3))]')';
+      [id] = knnsearch(TrainDataCV,TestDataCV,'K',3);
+      TestDataPred = mode([TrainDataGT(id(:,1)) TrainDataGT(id(:,2)) TrainDataGT(id(:,3))]')';
     otherwise
       error('Unknown classification method')
   end
