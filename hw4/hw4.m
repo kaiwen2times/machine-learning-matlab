@@ -69,7 +69,7 @@ numberOfFolds=5;
 rng(2000); %random number generator seed
 CVindex = crossvalind('Kfold',y,numberOfFolds);
 method='LogisticRegression'
-lambda=1;
+lambda=100;
 predictionLabels = zeros(size(y));
 
 for i = 1:numberOfFolds
@@ -160,7 +160,9 @@ for i = 1:numberOfFolds
       TestDataPred=maxIndex;
     case 'KNN'
       [id] = knnsearch(TrainDataCV,TestDataCV,'K',3);
-      TestDataPred = mode([TrainDataGT(id(:,1)) TrainDataGT(id(:,2)) TrainDataGT(id(:,3))]')';
+      neighborM = [TrainDataGT(id(:,1)) TrainDataGT(id(:,2)) TrainDataGT(id(:,3))];
+      freqM = mode(neighborM');
+      TestDataPred = freqM';
     otherwise
       error('Unknown classification method')
   end
