@@ -85,54 +85,6 @@ print('cmpe677_hwk5_2','-dpng')
 %==========================================================================
 clear;
 % Load Training Data- Andrew Ng Machine Learning MOOC
-load('ex3data1.mat'); % training data stored in arrays X, y (this data was given in hwk #4)
-n = size(X, 1);
-num_labels = length(unique(y)); % 10 labels, from 1 to 10 (note "0" is mapped to label 10)
-
-% Randomly select 100 data points to display
-rng(2000); %random number generator seed
-rand_indices = randperm(n);
-sel = X(rand_indices(1:100), :);
-
-%displayData(sel);
-%print -djpeg95 hwk4_4.jpg
-
-Xdata = X;
-figure
-
-%ClassificationTree
-tree = ClassificationTree.fit(Xdata,y);
-maxprune = max(tree.PruneList);
-treePrune = prune(tree,'level',maxprune-3);
-view(treePrune,'mode','graph');
-pred = predict(tree,Xdata);
-subplot(2,1,1);
-hold off;
-plot(y,'g','linewidth',2); hold on; plot(pred,'b','linewidth',2);
-subplot(2,1,2);
-plot(y-pred,'k','linewidth',3);
-mse = (1/length(y))*sum((y-pred).^2); %0.7964
-fprintf('MSE for regular classification tree: %f \n ',mse);
-
-%BaggedTree
-rng(2000); %random number generator seed
-t = ClassificationTree.template('MinLeaf',1);
-bagtree = fitensemble(Xdata,y,'Bag',10,t,'type','classification');
-ypred = predict(bagtree,Xdata); %really should test with a test set here
-figure
-subplot(2,1,1); 
-hold off;
-plot(y,'g','linewidth',2); hold on; plot(ypred,'b','linewidth',2);
-subplot(2,1,2);
-plot(y-ypred,'k','linewidth',3);
-msebag = (1/length(y))*sum((y-ypred).^2); %0.0884
-fprintf('MSE for bagged classification tree: %f \n ',msebag);
-
-%==========================================================================
-% logistical regression and KNN
-%==========================================================================
-clear;
-% Load Training Data- Andrew Ng Machine Learning MOOC
 load('ex3data1.mat'); % training data stored in arrays X, y
 n = size(X, 1);
 num_labels = length(unique(y)); % 10 labels, from 1 to 10 (note "0" is mapped to label 10)
@@ -154,7 +106,7 @@ numberOfFolds = 5;
 rng(2000); %random number generator seed
 CVindex = crossvalind('Kfold',y, numberOfFolds);
 
-method = 'KNN'
+method = 'BaggedTree'
 
 lambda = 0.1;
 for i = 1:numberOfFolds
@@ -195,8 +147,16 @@ for i = 1:numberOfFolds
       [idx, dist] = knnsearch(TrainDataCV,TestDataCV,'k',3);
       TestDataPred=mode([TrainDataGT(idx(:,1)) TrainDataGT(idx(:,2)) TrainDataGT(idx(:,3)) ]')';
     case 'ClassificationTree'
+      tree = ClassificationTree.fit(TrainDataCV,TrainDataGT);
+      maxprune = max(tree.PruneList);
+      treePrune = prune(tree,'level',maxprune-3);
+      view(treePrune,'mode','graph');
+      TestDataPred = predict(tree,TestDataCV);
     case 'BaggedTree'
       rng(2000); %random number generator seed
+      t = ClassificationTree.template('MinLeaf',1);
+      bagtree = fitensemble(TrainDataCV,TrainDataGT,'Bag',10,t,'type','classification');
+      TestDataPred = predict(bagtree,TestDataCV); %really should test with a test set here
     otherwise
       error('Unknown classification method')
   end
