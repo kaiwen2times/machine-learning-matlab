@@ -175,3 +175,20 @@ for i=1:r
   end
   fprintf('\n');
 end
+
+
+
+%==========================================================================
+% question 6
+%==========================================================================
+clear
+addpath('../hw4');
+b = load('bupa.data');
+X = b(:,1:end-1);
+y = b(:,end);
+method = 'LogisticRegression'
+options.method = method;
+options.numberOfFolds = 5;
+options.lambda = 0.1;
+[confusionMatrix,accuracy] = classifiy677_hwk5(X,y,options);
+
