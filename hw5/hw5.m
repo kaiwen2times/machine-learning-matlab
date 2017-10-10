@@ -235,3 +235,12 @@ print('cmpe677_hwk5_6','-dpng')
 %==========================================================================
 % question 7
 %==========================================================================
+clear
+addpath('../hw4');
+b = load('bupa.data');
+X = b(:,1:end-1);
+y = b(:,end);
+options.method = 'Adaboost';
+options.numberOfFolds = 5;
+options.adaboost_numFeatures = 500;
+[confusionMatrix,accuracy] = classifiy677_hwk5(X,y,options)
