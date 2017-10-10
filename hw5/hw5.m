@@ -179,7 +179,7 @@ end
 
 
 %==========================================================================
-% question 6
+% question 6a
 %==========================================================================
 clear
 addpath('../hw4');
@@ -192,3 +192,46 @@ options.numberOfFolds = 5;
 options.lambda = 0.1;
 [confusionMatrix,accuracy] = classifiy677_hwk5(X,y,options);
 
+
+%==========================================================================
+% question 6e
+%==========================================================================
+clear
+b = load('bupa.data');
+Xdata = b(:,1:end-1);
+y = b(:,end);
+
+%turn ground truth labels into {-1,+1}
+yList = unique(y);
+if yList(1) ~= -1
+  y(y==yList(1))=-1;
+  y(y==yList(2))= 1;
+end
+%form train and test sets
+TrainXdata = Xdata(1:200,:);
+TrainGT = y(1:200);
+TestXdata = Xdata(201:end,:);
+TestGT = y(201:end);
+
+%number of features
+adaboost_numFeatures=500;
+[classifiers, errors, pred] = myAdaBoost(TrainXdata,TrainGT,adaboost_numFeatures,TestXdata,TestGT)
+meanTrain = errors.train;
+meanTest = errors.test;
+meanEB = errors.eb;
+
+figure
+hold on
+x = 1:1:adaboost_numFeatures;
+plot(x, meanEB,'k:',x,meanTest,'r-',x,meanTrain,'b--','LineWidth',2);
+legend('ErrorBound','TestErr','TrainErr','Location','Best');
+xlabel 'iteration (number of Classifiers)'
+ylabel 'error rates (50 trials)'
+title 'AdaBoost Performance on Bupa'
+print('cmpe677_hwk5_6','-dpng')
+
+
+
+%==========================================================================
+% question 7
+%==========================================================================

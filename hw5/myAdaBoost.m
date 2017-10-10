@@ -35,7 +35,7 @@ for i = 1:1:adaboost_numFeatures
     h1.alpha = alpha;
     [newWeights,zz] = AdaBoostUpdateWeights(weights,h1,TrainXdata,TrainGT);    %update the weights
     h1.z = zz;                                                  %theoretical error bound
-    classifiers{i} = h1;
+    classifiers(i) = h1;
     
     %Document the performance
     trainPred = AdaBoostClassifier(classifiers,TrainXdata);

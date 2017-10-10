@@ -1,4 +1,4 @@
-function [classifier, performance] = decisionStumpW(weights,features, classes)
+function [classifier, performance] = decisionStumpW(weights, features, classes)
 % input:
 % weights. n x 1 matrix of weights
 % features. n x r matrix, where each of n rows is a data sample with r
@@ -97,5 +97,5 @@ end
 classifier.feature  = iii;
 classifier.thresh   = thresh(iii); 
 classifier.polarity = flag(iii); 
-classifier.performance =perf(iii); 
+classifier.performance = perf(iii); 
 performance = perf(iii); 
