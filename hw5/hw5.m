@@ -106,7 +106,7 @@ numberOfFolds = 5;
 rng(2000); %random number generator seed
 CVindex = crossvalind('Kfold',y, numberOfFolds);
 
-method = 'BaggedTree'
+method = 'ClassificationTree'
 
 lambda = 0.1;
 for i = 1:numberOfFolds
