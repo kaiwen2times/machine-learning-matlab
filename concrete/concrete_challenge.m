@@ -87,18 +87,9 @@ yTest = Data(501:1000,9);
 %    tree = RegressionTree.fit( );
 
 % For example: 
-tree = RegressionTree.fit(XdataTrain,yTrain);
-%maxprune = max(tree.PruneList);
-%prune(tree,'level',maxprune-3);
-% view(treePrune,'mode','graph');
-pred = predict(tree,XdataTest);
-mse = (1/length(yTest))*sum((yTest-pred).^2);
-fprintf('MSE for  classification tree: %f \n ',mse);
-% MSE for  classification tree: 328.045371
-
 
 rng(2000);  %random number generator seed
-t = RegressionTree.template('MinLeaf',1);
+t = RegressionTree.template('Prune','on','MinLeaf',1);
 bagtree = fitensemble(XdataTrain,yTrain,'Bag',7,t,'type','regression');
 ypred = predict(bagtree,XdataTest);
 msebagclass = (1/length(yTest))*sum((yTest-ypred).^2);
