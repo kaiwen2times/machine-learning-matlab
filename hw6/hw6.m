@@ -313,36 +313,80 @@ clear;
 addpath('C:\Users\kxz6582\Downloads\machine-intelligence\hw6\libsvm-3.18\windows');
 load('ex6data2.mat'); %load Andrew Ng data
 pos = find(y == 1); neg = find(y == 0);
-% Plot Examples
 figure
 plot(X(pos, 1), X(pos, 2), 'g+','LineWidth', 3, 'MarkerSize', 12)
 hold on;
-
 plot(X(neg, 1), X(neg, 2), 'ro', 'MarkerFaceColor', 'r', 'MarkerSize', 7)
-% Cost value
+error = 100;
+g = 0;
 C = 1;
-%Now try a radial basis function
-% Call svmtrain from LIBSVM
-% -t 2 says to do a radial basis kernel
-% -c <value> sets cost to <value>, higher c means SVM will weigh errors more
-% -g <value> sets gamma to <value>, higher g means smoother fit
-% Try a linear kernel first
-% gamma value
-for g=0:10:1000
+while(error ~= 0)
     eval(['model = svmtrain(y,X,''-t 2 -c ' num2str(C) ' -g ' num2str(g) ''' );']);
-    %Predictions
-    predictionsTrain = svmpredict( y, X, model, '-q');
-    predictionsTrain(predictionsTrain==-1) = 0; %change -1 to 0 to match GT
-
-    %compute training error
-    predictionsTrainError = sum(predictionsTrain~= y)/length(y);
-    fprintf('Error on train set = %0.2f%%\n',predictionsTrainError*100);
-    if predictionsTrainError == 0
-    break
+    prediction = svmpredict(y, X, model, '-q');
+    prediction(prediction == -1) = 0;
+    error = sum(prediction ~= y)/length(y);
+    g = g+10;
 end
-end
-fprintf('The min value of g for 0%% training error is: %d\n',g);
 visualizeBoundary2D(X, y, model);
-str = sprintf('The min value of g for 0%% training error is: %d\n',g);
+str = strcat('100% training accuray with g=',num2str(g-10));
 title(str,'fontsize',14);
-print -dpng hwk6_q7.png
+print('cmpe677_hwk6_11_svm','-dpng')
+
+
+
+%==========================================================================
+% question 12
+%==========================================================================
+clear;
+addpath('C:\Users\kxz6582\Downloads\machine-intelligence\hw6\libsvm-3.18\windows');
+load('ex6data2.mat'); %load Andrew Ng data
+%convert from y=[0,1} to y={1,2} for confusion matrix indexing
+y(y==1)=2;
+y(y==0)=1;
+bestAccuracy = 0;
+bestG = 0;
+bestC = 1;
+bestM = 0;
+for c=1:2:10
+    for g=0:10:50
+        options.method = 'SVM';
+        options.numberOfFolds = 5;
+        options.svm_t=2;
+        options.svm_c=c;
+        options.svm_g=g;
+        [confusionMatrix,accuracy] = classify677_hwk6(X,y,options);
+        if(accuracy > bestAccuracy)
+            bestAccuracy = accuracy;
+            bestM = confusionMatrix;
+            bestG = g;
+            bestC = c;
+        end
+    end
+end
+
+bestAccuracy = bestAccuracy * 100;
+str = strcat('best accuracy:',num2str(bestAccuracy),'% c=',num2str(bestC),' g=',num2str(bestG))
+display('Best Confusion Matrix');
+bestM
+% convert back to 1s and 0s
+y(y==1)=0;
+y(y==2)=1;
+% plot points
+pos = find(y == 1);
+neg = find(y == 0);
+figure
+plot(X(pos, 1), X(pos, 2), 'g+','LineWidth', 3, 'MarkerSize', 12);
+hold on;
+plot(X(neg, 1), X(neg, 2), 'ro', 'MarkerFaceColor', 'r', 'MarkerSize', 7);
+% create svm model
+eval(['model = svmtrain(y,X,''-t 2 -c ' num2str(bestC) ' -g ' num2str(bestG) ''' );']);
+visualizeBoundary2D(X, y, model);
+title(str,'fontsize',14);
+print('cmpe677_hwk6_12_svm','-dpng')
+
+% best accuracy:99.6524% c=3 g=30
+
+%Best Confusion Matrix
+
+%   382     1
+%    2   478
