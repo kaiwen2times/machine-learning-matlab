@@ -46,12 +46,12 @@ end
 ynn=ynn';
 
 % cost function- first without regularization
-% <<update next line>>:
-% J = 
+J = -(1/n)*sum(sum( ynn.*log(out)+(1-ynn).*log(1-out) ));
 
 % Add regularization to cost function
-% <<update next line>>:
-% reg = 
+sumLayer1 = sum(sum( Theta1(:,2:end).^2 ));
+sumLayer2 = sum(sum( Theta2(:,2:end).^2 ));
+reg = (lambda/(2*n))*(sumLayer1 + sumLayer2);
 J = J+reg;
 
 

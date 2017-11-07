@@ -105,11 +105,16 @@ end
 %         target1Dvector(ii) = find(targets(:,ii) == 1);
 % end
 % max(target1Dvector-y) %this will be zero
-
 fprintf('\nLoading Saved Neural Network Parameters ...\n')
- 
 % Load the weights into variables Theta1 and Theta2
 load('ex4weights.mat');  %Pre-learned weights from Andrew Ng class
- 
 % Unroll parameters 
 nn_params = [Theta1(:) ; Theta2(:)];
+
+lambda = 0;
+J = nnCostFunction(nn_params, D, size(Theta1,1), C, X, y, lambda);
+fprintf(['Cost at parameters (no regularization): %f \n'], J);
+
+lambda = 1;
+J = nnCostFunction(nn_params, D, size(Theta1,1), C, X, y, lambda);
+fprintf(['Cost at parameters (with regularization): %f \n'], J);
