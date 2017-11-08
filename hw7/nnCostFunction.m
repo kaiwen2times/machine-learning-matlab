@@ -59,12 +59,12 @@ J = J+reg;
 for t = 1:n
   % Step 1)  Forward propagate
   a1 = X1(t,:);	% we did the bias above
-  z2 = Theta1*X1';
+  z2 = Theta1*a1';
   a2 = sigmoid(z2);
   a2 = [1;a2];	% need to add the bias back to this one
   z3 = Theta2*a2;
   a3 = sigmoid(z3);
-  z2 = [ 1 ; z2 ];	% still need to worry about the bias effect
+  z2 = [1;z2];	% still need to worry about the bias effect
 
   % Step 2)  Compute error
   deltaPart3 = a3 - ynn(:,t);

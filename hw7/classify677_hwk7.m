@@ -196,10 +196,10 @@ for i = 1:numberOfFolds
             end
 
             %Convert X and y data into Matlab nnet format:
-            inputs = <insert code here>
+            inputs = TrainXdata';
             
             %Convert to one-hot encoding ground truth values
-            targets = <insert code here>
+            targets = TrainGT;
             
             % Create a Pattern Recognition Network
             setdemorandstream(2014784333);   %seed for random number generator
@@ -211,14 +211,14 @@ for i = 1:numberOfFolds
             net.divideParam.testRatio = 0.0;
             
             % Train the Network
-            [net,tr] = train(<insert code here>);  %return neural net and a training record
+            [net,tr] = train(net, inputs, targets);  %return neural net and a training record
             % plotperform(tr); %shows train, validation, and test per epoch
             
             %Convert X and y test data into Matlab nnet format:
-            inputsTest = <insert code here>;
+            inputsTest = TestXdata';
             
-            testY = net(<insert code here>);   %pass all inputs through nnet
-            TestDataPred=<insert code here>;
+            testY = net(inputsTest);   %pass all inputs through nnet
+            TestDataPred = vec2ind(testY);
                    
         otherwise
             error('Unknown classification method')
