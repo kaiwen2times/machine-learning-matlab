@@ -199,8 +199,10 @@ for i = 1:numberOfFolds
             inputs = TrainXdata';
             
             %Convert to one-hot encoding ground truth values
-            targets = TrainGT;
-            
+            targets = zeros(C,length(TrainXdata));
+            for ii=1:length(TrainXdata)
+                targets(TrainGT(ii),ii) =  1;
+            end
             % Create a Pattern Recognition Network
             setdemorandstream(2014784333);   %seed for random number generator
             net = patternnet(hiddenLayerSize);
@@ -218,13 +220,15 @@ for i = 1:numberOfFolds
             inputsTest = TestXdata';
             
             testY = net(inputsTest);   %pass all inputs through nnet
-            TestDataPred = vec2ind(testY);
+            testY = testY';
+            for row= 1:size(testY,1)
+                TestDataPred(row,:) = find(testY(row,:) == 1);
+            end
                    
         otherwise
             error('Unknown classification method')
     end
-    
-    predictionLabels(TestIndex,:) =double(TestDataPred);
+    predictionLabels(TestIndex,:) = double(TestDataPred);
 end
 
 confusionMatrix = confusionmat(y,predictionLabels);

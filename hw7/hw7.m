@@ -241,11 +241,10 @@ view(net); %shows each layer with number of inputs and outputs to each
 %==========================================================================
 %% question 9b
 %==========================================================================
-close all ; clear all;
+close all; clear all;
 %Download hwk7files_forMycourses.zip and place them into an appropriate
 %hwk7 directory.  Update the two paths below for your machine
-cd C:\Users\rwpeec\Desktop\rwpeec\rit\CMPE-677_MachineIntelligence\hwk\hwk7
-addpath C:\Users\rwpeec\Desktop\rwpeec\rit\CMPE-677_MachineIntelligence\hwk\hwk6\libsvm-3.18\windows
+addpath('C:\Users\kxz6582\Downloads\machine-intelligence\hw6\libsvm-3.18\windows')
  
 % We will use mnist hand written digits, '0' through '9'
 load('ex4data1.mat');  %5000 Mnist digits from Andrew Ng class
@@ -254,15 +253,15 @@ D = size(X,2);  %number of dimensions/sample.  20x20=400
 C = length(unique(y));  %number of classes, class values are 1...10, where 10 is a digit '0'
  
 options.numberOfFolds = 5;
-options.method = 'SVM';
-[confusionMatrix_svm,accuracy_svm] =  classify677_hwk7(X,y,options);
+% options.method = 'SVM';
+% [confusionMatrix_svm,accuracy_svm] =  classify677_hwk7(X,y,options);
  
-% options.method = 'nnet';
-% options.nnet_hiddenLayerSize = 25;
-% [confusionMatrix_nnet1,accuracy_nnet1] =  classify677_hwk7(X,y,options);
+options.method = 'nnet';
+options.nnet_hiddenLayerSize = 25;
+[confusionMatrix_nnet1,accuracy_nnet1] =  classify677_hwk7(X,y,options);
  
-fprintf('Linear SVM accuracy is: %0.2f%%\n',accuracy_svm*100);
-%fprintf('Nnet accuracy with %d hidden layers, num nodes per layer = %d is: %0.2f%%\n',length(options.nnet_hiddenLayerSize),options.nnet_hiddenLayerSize,accuracy_nnet1*100);
+% fprintf('Linear SVM accuracy is: %0.2f%%\n',accuracy_svm*100);
+fprintf('Nnet accuracy with %d hidden layers, num nodes per layer = %d is: %0.2f%%\n',length(options.nnet_hiddenLayerSize),options.nnet_hiddenLayerSize,accuracy_nnet1*100);
  
 % options.method = 'nnet';
 % options.nnet_hiddenLayerSize = [25 10];
