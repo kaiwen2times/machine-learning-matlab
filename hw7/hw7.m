@@ -253,17 +253,59 @@ D = size(X,2);  %number of dimensions/sample.  20x20=400
 C = length(unique(y));  %number of classes, class values are 1...10, where 10 is a digit '0'
  
 options.numberOfFolds = 5;
-% options.method = 'SVM';
-% [confusionMatrix_svm,accuracy_svm] =  classify677_hwk7(X,y,options);
+options.method = 'SVM';
+[confusionMatrix_svm,accuracy_svm] =  classify677_hwk7(X,y,options);
  
 options.method = 'nnet';
 options.nnet_hiddenLayerSize = 25;
 [confusionMatrix_nnet1,accuracy_nnet1] =  classify677_hwk7(X,y,options);
  
-% fprintf('Linear SVM accuracy is: %0.2f%%\n',accuracy_svm*100);
+fprintf('Linear SVM accuracy is: %0.2f%%\n',accuracy_svm*100);
 fprintf('Nnet accuracy with %d hidden layers, num nodes per layer = %d is: %0.2f%%\n',length(options.nnet_hiddenLayerSize),options.nnet_hiddenLayerSize,accuracy_nnet1*100);
  
-% options.method = 'nnet';
-% options.nnet_hiddenLayerSize = [25 10];
-% [confusionMatrix_nnet2,accuracy_nnet2] =  classify677_hwk7(X,y,options);
-% fprintf('Nnet accuracy with %d hidden layers, num nodes per layer = [%d %d] is: %0.2f%%\n',length(options.nnet_hiddenLayerSize),options.nnet_hiddenLayerSize,accuracy_nnet2*100);
+options.method = 'nnet';
+options.nnet_hiddenLayerSize = [25 10];
+[confusionMatrix_nnet2,accuracy_nnet2] =  classify677_hwk7(X,y,options);
+fprintf('Nnet accuracy with %d hidden layers, num nodes per layer = [%d %d] is: %0.2f%%\n',length(options.nnet_hiddenLayerSize),options.nnet_hiddenLayerSize,accuracy_nnet2*100);
+
+
+% Total nSV = 1344
+% SVM: Accuracy =  90.68% 
+% Confusion Matrix:
+%    488      3      0      4      2      0      1      0      2      0 
+%      6    453      3     11      4      3      6      7      0      7 
+%      6     12    437      0     25      0      5      8      6      1 
+%      3      4      2    462      1      3      1      2     18      4 
+%      3      7     29      5    427      6      0     12      6      5 
+%      3      5      0      7      5    474      0      2      0      4 
+%      6      6      4     19      1      0    441      0     23      0 
+%     13     18     17      3     14      5      1    423      2      4 
+%      2      4      5     18      3      1     21      3    440      3 
+%      0      4      1      3      1      2      0      0      0    489 
+% nnet: Accuracy =  90.98% 
+% Confusion Matrix:
+%    479      1      3      1      2      0      2     10      2      0 
+%      5    433     13     10      8      7      8     12      1      3 
+%      2     13    448      0     17      2      9      5      4      0 
+%      3      3      1    460      1      9      2      3     17      1 
+%      2      4     22      4    432      8      2     14      6      6 
+%      3     13      0      3      8    464      0      4      0      5 
+%      5      4      0     10      0      0    463      4     12      2 
+%      5     12     10      4      9      7      3    442      6      2 
+%      3      2      5     11      5      0     19      3    448      4 
+%      0      0      4      2      3      2      1      6      2    480 
+% Linear SVM accuracy is: 90.68%
+% Nnet accuracy with 1 hidden layers, num nodes per layer = 25 is: 90.98%
+% nnet: Accuracy =  89.44% 
+% Confusion Matrix:
+%    473      3      1      2      9      1      6      5      0      0 
+%      5    429     16      8      3      7     11     16      1      4 
+%      4     12    431      2     25      2      7      8      6      3 
+%      4      3      1    452      3     10      2      4     21      0 
+%      1      3     24      5    426     12      0     15      9      5 
+%      1     10      0      7     11    462      2      3      1      3 
+%      8      3      4      8      0      0    455      1     20      1 
+%     12      9     16      6     20      6      3    419      2      7 
+%      2      0      5     18      2      1     14      6    448      4 
+%      0      3      3      1      4      6      3      2      1    477 
+% Nnet accuracy with 2 hidden layers, num nodes per layer = [25 10] is: 89.44

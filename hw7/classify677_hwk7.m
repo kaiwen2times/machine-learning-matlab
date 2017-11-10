@@ -220,10 +220,7 @@ for i = 1:numberOfFolds
             inputsTest = TestXdata';
             
             testY = net(inputsTest);   %pass all inputs through nnet
-            testY = testY';
-            for row= 1:size(testY,1)
-                TestDataPred(row,:) = find(testY(row,:) == 1);
-            end
+            TestDataPred = vec2ind(testY)';
                    
         otherwise
             error('Unknown classification method')
