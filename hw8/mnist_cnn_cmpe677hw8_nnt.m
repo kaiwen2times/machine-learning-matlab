@@ -7,13 +7,13 @@ clc;
 
 rng(1000);
 opts.train.learningRate = 0.001 ;
-opts.train.numEpochs = 1;
-opts.dataDir = fullfile('./') ;  %note: for windows change it to fullfile('.\')
+opts.train.numEpochs = 10;
+opts.dataDir = fullfile('.\') ;  %note: for windows change it to fullfile('.\')
 opts.imdbPath = fullfile(opts.dataDir, 'ex4data1_lmdb');
-opts.train.batchSize = 10 ;
+opts.train.batchSize = 20 ;
 opts.train.expDir = opts.dataDir ;
 
-%Prepare data and model
+%Prepare data and model 
 if exist('ex4data1_lmdb.mat', 'file')
     imdb = load('ex4data1_lmdb.mat') ;
 else
@@ -27,7 +27,7 @@ end
 
 %calls the function that defines the convolutional neural network architecture.
 
-[layers, options] = cnn_architecture(opts);
+[layers, options] = cnn_architecture1(opts);
 
 %if exist('convnet.mat', 'file')
 %    load convnet;

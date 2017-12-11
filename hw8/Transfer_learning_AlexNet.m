@@ -47,12 +47,12 @@ net = alexnet;
 % layers and three fully connected layers.
 net.Layers
 
-%layers_alexnet = net.Layers;
-%disp('Generating plot before training..')
-%figure
-%lgraph = layerGraph(layers_alexnet);
-%plot(lgraph)
-%title('Before replacing the layers.')
+layers_alexnet = net.Layers;
+disp('Generating plot before training..')
+figure
+lgraph = layerGraph(layers_alexnet);
+plot(lgraph)
+title('Before replacing the layers.')
 
 %% Transfer Layers to New Network
 % The last three layers of the pretrained network |net| are configured for
@@ -105,12 +105,12 @@ netTransfer = trainNetwork(trainingImages,layers,options);
 save netTransfer;
 end
 
-%disp('Generating plot after training..')
-%layers = netTransfer.Layers;
-%lgraph = layerGraph(layers);
-%figure
-%plot(lgraph)
-%title('After replacement of layers and training...')
+disp('Generating plot after training..')
+layers = netTransfer.Layers;
+lgraph = layerGraph(layers);
+figure
+plot(lgraph)
+title('After replacement of layers and training...')
 
 %% Classify Validation Images
 % Classify the validation images using the fine-tuned network.
@@ -122,3 +122,12 @@ predictedLabels = classify(netTransfer,validationImages);
 valLabels = validationImages.Labels;
 accuracy = mean(predictedLabels == valLabels)
 
+numImages = numel(validationImages.Labels);
+idx = randperm(numImages,4);
+figure
+for i = 1:4
+    subplot(2,2,i)
+    I = readimage(validationImages,idx(i));
+    imshow(I)
+    title(string(validationImages.Labels(idx(i))))
+end

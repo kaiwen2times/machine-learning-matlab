@@ -1,8 +1,8 @@
 %Define the convolutional neural network architecture.
-function [layers, options] = cnn_architecture(opts)
+function [layers, options] = cnn_architecture1(opts)
 
 layers = [imageInputLayer([20 20 1]);
-          convolution2dLayer(5,20,'Stride',1,'Padding',2);
+          convolution2dLayer(5,64,'Stride',1,'Padding',2);
           reluLayer();
           maxPooling2dLayer(2,'Stride',2);
           fullyConnectedLayer(10);

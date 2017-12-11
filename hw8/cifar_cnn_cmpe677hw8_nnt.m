@@ -38,22 +38,22 @@ end
 % --------------------------------------------------------------------
  %function call to initialize CNN arch. (cifart_cnn_initialize_sample)
 
-[layers, options] = cifar_cnn_architecture(opts);
+[layers, options] = cifar_cnn_architecture1(opts);
 
-if exist('cifar10Net.mat', 'file')
-    load cifar10Net;
+if exist('cifar10Net1.mat', 'file')
+    load cifar10Net1;
 else
 %Train the network.
-[cifar10Net, info] = trainNetwork( imdb.images.data_train,...
+[cifar10Net1, info] = trainNetwork( imdb.images.data_train,...
                             imdb.images.labels_train_gt,...
                             layers, options);
                    
-save cifar10Net;
+save cifar10Net1;
 end
 
 
 %Run the trained network on the test set that was not used to train the network and predict the image labels (digits).
-YTest = classify(cifar10Net,imdb.images.data_test);
+YTest = classify(cifar10Net1,imdb.images.data_test);
 %Calculate the accuracy.
 accuracy = sum(YTest' == imdb.images.labels_test_gt)/numel(imdb.images.labels_test_gt)
 
